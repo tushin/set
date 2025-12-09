@@ -5,6 +5,7 @@ import com.sully.checklist.model.SetColor
 import com.sully.checklist.model.SetNumber
 import com.sully.checklist.model.SetShading
 import com.sully.checklist.model.SetShape
+import kotlinx.coroutines.flow.combine
 
 class SetGameEngine {
 
@@ -15,10 +16,10 @@ class SetGameEngine {
         private val cards = mutableListOf<SetCard>()
         init {
             var idCounter = 0
-            for (number in SetNumber.values()) {
-                for (color in SetColor.values()) {
-                    for (shape in SetShape.values()) {
-                        for (shading in SetShading.values()) {
+            for (number in SetNumber.entries) {
+                for (color in SetColor.entries) {
+                    for (shape in SetShape.entries) {
+                        for (shading in SetShading.entries) {
                             cards.add(SetCard(idCounter++, number, color, shape, shading))
                         }
                     }

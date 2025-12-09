@@ -20,6 +20,9 @@ class GameViewModel : ViewModel() {
     private val _score = MutableStateFlow(0)
     val score = _score.asStateFlow()
 
+    private val _deckSize = MutableStateFlow(0)
+    val deckSize = _deckSize.asStateFlow()
+
     init {
         startNewGame()
     }
@@ -27,6 +30,7 @@ class GameViewModel : ViewModel() {
     fun startNewGame() {
         deck.clear()
         deck.addAll(engine.generateDeck())
+        _deckSize.value = deck.size
         _score.value = 0
         _selectedCards.value = emptyList()
         dealInitialBoard()
@@ -39,8 +43,22 @@ class GameViewModel : ViewModel() {
                 newBoard.add(deck.removeAt(0))
             }
         }
+        _deckSize.value = deck.size
         _board.value = newBoard
         ensureSetExistsOrDealMore()
+    }
+
+    fun onDraw3Clicked() {
+        if (deck.isNotEmpty() && _board.value.size < 15) {
+            val currentBoard = _board.value.toMutableList()
+            repeat(3) {
+                if (deck.isNotEmpty()) {
+                    currentBoard.add(deck.removeAt(0))
+                }
+            }
+            _deckSize.value = deck.size
+            _board.value = currentBoard
+        }
     }
 
     private fun ensureSetExistsOrDealMore() {
@@ -55,6 +73,7 @@ class GameViewModel : ViewModel() {
                 }
             }
         }
+        _deckSize.value = deck.size
         _board.value = currentBoard
     }
 
@@ -99,8 +118,6 @@ class GameViewModel : ViewModel() {
         // If board size <= 12 and deck not empty, replace with new cards.
         // If deck empty, just remove.
 
-        val indicesToRemove = set.map { currentBoard.indexOf(it) }.sorted()
-
         // We will try to replace in-place if possible to maintain grid stability
         if (currentBoard.size > 12 || deck.isEmpty()) {
             currentBoard.removeAll(cardsToRemove)
@@ -117,6 +134,7 @@ class GameViewModel : ViewModel() {
                 }
             }
         }
+        _deckSize.value = deck.size
 
         _board.value = currentBoard
         ensureSetExistsOrDealMore()

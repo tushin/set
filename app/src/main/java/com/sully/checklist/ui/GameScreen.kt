@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -29,13 +31,25 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
     val score by viewModel.score.collectAsState()
 
     Scaffold(
+            modifier = Modifier.statusBarsPadding(),
             topBar = {
                 Row(
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                ) { Text(text = "Score: $score", style = MaterialTheme.typography.headlineMedium) }
+            },
+            bottomBar = {
+                Row(
+                        modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Score: $score", style = MaterialTheme.typography.headlineMedium)
+                    val deckSize by viewModel.deckSize.collectAsState()
+                    Button(
+                            onClick = { viewModel.onDraw3Clicked() },
+                            enabled = deckSize > 0 && board.size < 15
+                    ) { Text("Draw 3") }
                     Button(onClick = { viewModel.startNewGame() }) { Text("New Game") }
                 }
             }
