@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -36,8 +37,20 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
     val selectedCards by viewModel.selectedCards.collectAsState()
     val score by viewModel.score.collectAsState()
     val hintCards by viewModel.hintCards.collectAsState()
+    val isGameOver by viewModel.isGameOver.collectAsState()
 
     val shakeOffset = remember { Animatable(0f) }
+
+    if (isGameOver) {
+        AlertDialog(
+                onDismissRequest = { /* No dismiss, must start new game */},
+                title = { Text("Game Over") },
+                text = { Text("No more sets available.\nFinal Score: ${score * 3}") },
+                confirmButton = {
+                    Button(onClick = { viewModel.startNewGame() }) { Text("New Game") }
+                }
+        )
+    }
 
     LaunchedEffect(Unit) {
         viewModel.effects.collectLatest { effect ->

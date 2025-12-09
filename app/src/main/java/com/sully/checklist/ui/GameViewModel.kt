@@ -34,6 +34,9 @@ class GameViewModel : ViewModel() {
     private val _hintCards = MutableStateFlow<List<SetCard>>(emptyList())
     val hintCards = _hintCards.asStateFlow()
 
+    private val _isGameOver = MutableStateFlow(false)
+    val isGameOver = _isGameOver.asStateFlow()
+
     private val _effects = Channel<GameEffect>()
     val effects = _effects.receiveAsFlow()
 
@@ -48,6 +51,7 @@ class GameViewModel : ViewModel() {
         _score.value = 0
         _selectedCards.value = emptyList()
         _hintCards.value = emptyList()
+        _isGameOver.value = false
         dealInitialBoard()
     }
 
@@ -100,6 +104,10 @@ class GameViewModel : ViewModel() {
         }
         _deckSize.value = deck.size
         _board.value = currentBoard
+
+        if (deck.isEmpty() && engine.findSet(currentBoard) == null) {
+            _isGameOver.value = true
+        }
     }
 
     fun onCardSelected(card: SetCard) {
