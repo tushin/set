@@ -42,10 +42,16 @@ fun SetCardView(
         card: SetCard,
         isSelected: Boolean,
         onClick: () -> Unit,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
+        isHinted: Boolean = false
 ) {
-    val borderColor = if (isSelected) Color.Blue else Color.LightGray
-    val borderWidth = if (isSelected) 3.dp else 1.dp
+    val borderColor =
+            when {
+                isSelected -> Color.Blue
+                isHinted -> Color.Yellow // or Color(0xFFFFD700) for Gold
+                else -> Color.LightGray
+            }
+    val borderWidth = if (isSelected || isHinted) 3.dp else 1.dp
 
     Surface(
             modifier =

@@ -1,10 +1,18 @@
 package com.sully.checklist.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.sully.checklist.logic.SetGameEngine
 import com.sully.checklist.model.SetCard
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+
+sealed interface GameEffect {
+    data object ShowError : GameEffect
+}
 
 class GameViewModel : ViewModel() {
     private val engine = SetGameEngine()
@@ -23,6 +31,12 @@ class GameViewModel : ViewModel() {
     private val _deckSize = MutableStateFlow(0)
     val deckSize = _deckSize.asStateFlow()
 
+    private val _hintCards = MutableStateFlow<List<SetCard>>(emptyList())
+    val hintCards = _hintCards.asStateFlow()
+
+    private val _effects = Channel<GameEffect>()
+    val effects = _effects.receiveAsFlow()
+
     init {
         startNewGame()
     }
@@ -33,6 +47,7 @@ class GameViewModel : ViewModel() {
         _deckSize.value = deck.size
         _score.value = 0
         _selectedCards.value = emptyList()
+        _hintCards.value = emptyList()
         dealInitialBoard()
     }
 
@@ -46,6 +61,16 @@ class GameViewModel : ViewModel() {
         _deckSize.value = deck.size
         _board.value = newBoard
         ensureSetExistsOrDealMore()
+    }
+
+    fun onHintClicked() {
+        val foundSet = engine.findSet(_board.value)
+        if (foundSet != null) {
+            _hintCards.value = foundSet
+        } else {
+            // Should not happen if ensureSetExists works, but good to handle
+            // Maybe emit error or just ignored
+        }
     }
 
     fun onDraw3Clicked() {
@@ -99,11 +124,10 @@ class GameViewModel : ViewModel() {
             _score.value += 1
             removeAndReplace(selected)
             _selectedCards.value = emptyList()
+            _hintCards.value = emptyList()
         } else {
             // Not a set.
-            // Ideally show some visual feedback (shake/error).
-            // For now, just deselect after a short delay or immediately.
-            // Let's just reset selection for now, UI can handle animation if needed.
+            viewModelScope.launch { _effects.send(GameEffect.ShowError) }
             _selectedCards.value = emptyList()
         }
     }
