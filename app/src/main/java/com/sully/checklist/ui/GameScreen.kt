@@ -1,7 +1,7 @@
 package com.sully.checklist.ui
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -202,6 +202,12 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
                                                 userScrollEnabled = false,
                                                 modifier =
                                                         Modifier.widthIn(max = maxGridWidth)
+                                                                .animateContentSize(
+                                                                        animationSpec =
+                                                                                if (shouldAnimate)
+                                                                                        spring()
+                                                                                else snap()
+                                                                )
                                                                 .graphicsLayer {
                                                                         translationX =
                                                                                 shakeOffset.value
@@ -369,6 +375,12 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
                                                 userScrollEnabled = false,
                                                 modifier =
                                                         Modifier.widthIn(max = maxGridWidth)
+                                                                .animateContentSize(
+                                                                        animationSpec =
+                                                                                if (shouldAnimate)
+                                                                                        spring()
+                                                                                else snap()
+                                                                )
                                                                 .graphicsLayer {
                                                                         translationX =
                                                                                 shakeOffset.value
