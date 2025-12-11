@@ -101,7 +101,6 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
 
                 val isLandscape = maxWidth > maxHeight
 
-                val shakeOffset = remember { Animatable(0f) }
                 val safePadding = WindowInsets.safeDrawing.asPaddingValues()
                 val layoutDirection = androidx.compose.ui.platform.LocalLayoutDirection.current
 

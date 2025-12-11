@@ -197,21 +197,29 @@ fun ShapeView(card: SetCard, modifier: Modifier = Modifier) {
 }
 
 fun DrawScope.drawStripes(path: Path, color: Color, size: Size) {
-    // We can clip to the path and draw lines
     clipPath(path) {
-        val spacing = 8.dp.toPx()
-        for (x in 0..size.width.roundToInt() step spacing.roundToInt()) {
-            // For vertical stripes. But Set usually has horizontal or diagonal shading.
-            // Let's do horizontal for simplicity and clarity.
-        }
-        val ySpacing = 6.dp.toPx()
-        for (y in 0..size.height.roundToInt() step ySpacing.roundToInt()) {
-            drawLine(
-                    color = color,
-                    start = Offset(0f, y.toFloat()),
-                    end = Offset(size.width, y.toFloat()),
-                    strokeWidth = 1.dp.toPx()
-            )
+        val spacing = 4.dp.toPx() // Finer stripes
+
+        if (size.width > size.height) {
+            // WIDE Shape (Vertical Card Context) -> Vertical Stripes
+            for (x in 0..size.width.roundToInt() step spacing.roundToInt()) {
+                drawLine(
+                        color = color,
+                        start = Offset(x.toFloat(), 0f),
+                        end = Offset(x.toFloat(), size.height),
+                        strokeWidth = 1.dp.toPx()
+                )
+            }
+        } else {
+            // TALL Shape (Horizontal Card Context) -> Horizontal Stripes
+            for (y in 0..size.height.roundToInt() step spacing.roundToInt()) {
+                drawLine(
+                        color = color,
+                        start = Offset(0f, y.toFloat()),
+                        end = Offset(size.width, y.toFloat()),
+                        strokeWidth = 1.dp.toPx()
+                )
+            }
         }
     }
 }
@@ -226,62 +234,146 @@ fun createDiamondPath(size: Size): Path {
     }
 }
 
+fun createOvalPath(size: Size): Path {
+    return Path().apply {
+        // Pill / Stadium shape: Rounded Rectangle
+        // Adjust thickness to match Squiggle (approx 70% of minor axis)
+
+        val w = size.width
+        val h = size.height
+
+        val rect: Rect
+        val cornerRadius: Float
+
+        if (w >= h) {
+            // WIDE shape (Horizontal)
+            // Reduce Height (Minor axis)
+            val inset = h * 0.15f // 15% from top, 15% from bottom -> 70% thick
+            rect = Rect(left = 0f, top = inset, right = w, bottom = h - inset)
+            // Corner radius is half of the NEW height
+            cornerRadius = (h - 2 * inset) / 2f
+        } else {
+            // TALL shape (Vertical)
+            // Reduce Width (Minor axis)
+            val inset = w * 0.15f // 15% from left, 15% from right -> 70% thick
+            rect = Rect(left = inset, top = 0f, right = w - inset, bottom = h)
+            // Corner radius is half of the NEW width
+            cornerRadius = (w - 2 * inset) / 2f
+        }
+
+        addRoundRect(
+                androidx.compose.ui.geometry.RoundRect(
+                        rect = rect,
+                        cornerRadius =
+                                androidx.compose.ui.geometry.CornerRadius(
+                                        cornerRadius,
+                                        cornerRadius
+                                )
+                )
+        )
+    }
+}
+
 fun createSquigglePath(size: Size): Path {
     return Path().apply {
         val w = size.width
         val h = size.height
 
-        // A vertical "worm" or "peanut" shape.
-        // It's taller than it is wide.
-        // Coordinates normalized to w, h.
+        if (w >= h) {
+            // WIDE Squiggle (Horizontal Worm) - for Vertical Cards
+            // Waves on Top/Bottom (Long edges), Caps on Left/Right (Short edges)
 
-        // Top-left Curve start
-        moveTo(w * 0.2f, h * 0.15f)
+            // Anchors for S-curve
+            val leftX = w * 0.15f
+            val rightX = w * 0.85f
+            val topY = h * 0.25f // Thicker body for wide shape? Or keep proportional?
+            // Let's keep it somewhat centered.
+            // If we want it to look like the rotated version of the Tall one:
+            // Tall: width is narrow. Caps at top/bottom.
+            // Wide: height is narrow. Caps at left/right.
 
-        // Curve top
-        cubicTo(w * 0.2f, h * 0.0f, w * 0.8f, h * 0.0f, w * 0.8f, h * 0.15f)
+            val indent = h * 0.15f
+            val topBodyY = indent
+            val bottomBodyY = h - indent
 
-        // Right side - slight S-curve down
-        cubicTo(
-                w * 0.6f,
-                h * 0.35f, // Indent in
-                w * 1.0f,
-                h * 0.65f, // Bulge out
-                w * 0.8f,
-                h * 0.85f // Bottom right
-        )
+            // Start at Top-left of the main body
+            moveTo(leftX, topBodyY)
 
-        // Curve bottom
-        cubicTo(w * 0.8f, h * 1.0f, w * 0.2f, h * 1.0f, w * 0.2f, h * 0.85f)
+            // Top Edge (S-Curve: Bulge Up-Left, Indent Down-Right)
+            // Rotated from Right Edge of Tall version
+            // Tall Right Edge: Bulge Right (x > w), Indent Left (x < w)
+            // Wide Top Edge: Bulge Up (y < 0), Indent Down (y > 0)
 
-        // Left side - slight S-curve up (mirroring right roughly)
-        cubicTo(
-                w * 0.0f,
-                h * 0.65f, // Bulge out (left side, so 0.0 is left)
-                w * 0.4f,
-                h * 0.35f, // Indent in
-                w * 0.2f,
-                h * 0.15f // Top left start
-        )
+            cubicTo(
+                    w * 0.35f,
+                    -h * 0.1f, // CP1 (Bulge Up)
+                    w * 0.65f,
+                    h * 0.6f, // CP2 (Indent Down)
+                    rightX,
+                    topBodyY // End Top Right
+            )
 
-        close()
-    }
-}
+            // Right Cap (Bulge Right)
+            // Rotated from Bottom Cap of Tall
+            cubicTo(w, topBodyY, w, bottomBodyY, rightX, bottomBodyY)
 
-fun createRectanglePath(size: Size): Path {
-    return Path().apply { addRect(Rect(0f, 0f, size.width, size.height)) }
-}
+            // Bottom Edge (S-Curve: Indent Up-Left, Bulge Down-Right)
+            // Symmetric to Top Edge
+            cubicTo(
+                    w * 0.65f,
+                    h * 1.1f, // CP1 (Bulge Down)
+                    w * 0.35f,
+                    h * 0.4f, // CP2 (Indent Up)
+                    leftX,
+                    bottomBodyY // End Bottom Left
+            )
 
-fun createOvalPath(size: Size): Path {
-    return Path().apply {
-        val cornerRadius = size.height / 2f
-        // Draw a rounded rectangle with full radius to make an oval/pill shape
-        // Or actually just an Oval if aspect ratio permits
-        // Typically Set "Ovals" are Pill shapes.
-        // Let's use a RoundRect approximation or consistent Arc logic
+            // Left Cap (Bulge Left)
+            // Rotated from Top Cap of Tall
+            cubicTo(0f, bottomBodyY, 0f, topBodyY, leftX, topBodyY)
 
-        // Simpler: Just standard Oval
-        addOval(Rect(0f, 0f, size.width, size.height))
+            close()
+        } else {
+            // TALL Squiggle (Vertical Worm) - for Horizontal Cards (Standard Set Squiggle)
+            // Consistent style with Wide version: Bulge Out (Right) first, then Indent In (Left).
+
+            val leftX = w * 0.15f
+            val rightX = w * 0.85f
+            val topY = h * 0.15f
+            val bottomY = h * 0.85f
+
+            moveTo(leftX, topY)
+
+            // Top Cap (Bulge Up)
+            cubicTo(w * 0.35f, 0f, w * 0.65f, 0f, rightX, topY)
+
+            // Right Edge (S-Curve: Bulge Right, then Indent Left)
+            // Matches Wide Top Edge (Bulge Up, Indent Down) if rotated.
+            cubicTo(
+                    w * 1.1f,
+                    h * 0.35f, // CP1 (Bulge Right)
+                    w * 0.4f,
+                    h * 0.65f, // CP2 (Indent Left)
+                    rightX,
+                    bottomY
+            )
+
+            // Bottom Cap (Bulge Down)
+            cubicTo(w * 0.65f, h, w * 0.35f, h, leftX, bottomY)
+
+            // Left Edge (S-Curve: Bulge Left, then Indent Right)
+            // Symmetric to Right Edge
+            cubicTo(
+                    w * -0.1f,
+                    h * 0.65f, // CP1 (Bulge Left)
+                    w * 0.6f,
+                    h * 0.35f, // CP2 (Indent Right)
+                    leftX,
+                    topY
+            )
+
+            close()
+        }
     }
 }
 
