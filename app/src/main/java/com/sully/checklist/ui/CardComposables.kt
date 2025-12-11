@@ -36,6 +36,7 @@ import com.sully.checklist.model.SetColor
 import com.sully.checklist.model.SetNumber
 import com.sully.checklist.model.SetShading
 import com.sully.checklist.model.SetShape
+import com.sully.checklist.ui.theme.CardBackgroundColor
 import kotlin.math.roundToInt
 
 @Composable
@@ -66,7 +67,7 @@ fun SetCardView(
                             .border(borderWidth, borderColor, RoundedCornerShape(8.dp))
                             .clickable { onClick() },
             shape = RoundedCornerShape(8.dp),
-            color = Color.White,
+            color = CardBackgroundColor,
             shadowElevation = 4.dp
     ) {
         val count =

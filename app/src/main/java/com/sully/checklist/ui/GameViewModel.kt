@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sully.checklist.logic.SetGameEngine
 import com.sully.checklist.model.SetCard
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -37,6 +38,9 @@ class GameViewModel : ViewModel() {
     private val _isGameOver = MutableStateFlow(false)
     val isGameOver = _isGameOver.asStateFlow()
 
+    private val _shouldAnimate = MutableStateFlow(false)
+    val shouldAnimate = _shouldAnimate.asStateFlow()
+
     private val _effects = Channel<GameEffect>()
     val effects = _effects.receiveAsFlow()
 
@@ -45,6 +49,7 @@ class GameViewModel : ViewModel() {
     }
 
     fun startNewGame() {
+        _shouldAnimate.value = false // Disable animation for initial layout
         deck.clear()
         deck.addAll(engine.generateDeck())
         _deckSize.value = deck.size
@@ -53,6 +58,12 @@ class GameViewModel : ViewModel() {
         _hintCards.value = emptyList()
         _isGameOver.value = false
         dealInitialBoard()
+
+        // Enable animation after initial layout is likely complete
+        viewModelScope.launch {
+            delay(500)
+            _shouldAnimate.value = true
+        }
     }
 
     private fun dealInitialBoard() {

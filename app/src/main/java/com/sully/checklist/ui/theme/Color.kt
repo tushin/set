@@ -11,3 +11,6 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val DarkGreenBackground = Color(0xFF004D40) // Dark Teal/Green for background
+val GameButtonColor = Color(0xFFFFD54F) // Warm Yellow/Amber for buttons
+val GameButtonText = Color.Black // Black text for contrast on orange
+val CardBackgroundColor = Color(0xFFF5F5F5) // Off-white for card background
