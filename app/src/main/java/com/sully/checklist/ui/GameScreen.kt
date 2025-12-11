@@ -3,6 +3,7 @@ package com.sully.checklist.ui
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GameScreen(viewModel: GameViewModel = viewModel()) {
     val board by viewModel.board.collectAsState()
@@ -194,7 +196,7 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
                                     isSelected = selectedCards.contains(card),
                                     isHinted = hintCards.contains(card),
                                     onClick = { viewModel.onCardSelected(card) },
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier.animateItem().fillMaxWidth(),
                                     isLandscape = true
                             )
                         }
@@ -303,7 +305,7 @@ fun GameScreen(viewModel: GameViewModel = viewModel()) {
                                     isSelected = selectedCards.contains(card),
                                     isHinted = hintCards.contains(card),
                                     onClick = { viewModel.onCardSelected(card) },
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier.animateItem().fillMaxWidth(),
                                     isLandscape = false
                             )
                         }
