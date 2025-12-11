@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -43,7 +44,8 @@ fun SetCardView(
         isSelected: Boolean,
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
-        isHinted: Boolean = false
+        isHinted: Boolean = false,
+        isLandscape: Boolean = false
 ) {
     val borderColor =
             when {
@@ -53,9 +55,13 @@ fun SetCardView(
             }
     val borderWidth = if (isSelected || isHinted) 3.dp else 1.dp
 
+    // Landscape mode -> Horizontal Card (Aspect Ratio > 1, e.g., 3/2 = 1.5)
+    // Portrait mode -> Vertical Card (Aspect Ratio < 1, e.g., 2/3 = 0.66)
+    val cardAspectRatio = if (isLandscape) 1.5f else 0.66f
+
     Surface(
             modifier =
-                    modifier.aspectRatio(1.5f) // Standard card aspect ratio
+                    modifier.aspectRatio(cardAspectRatio)
                             .padding(4.dp)
                             .border(borderWidth, borderColor, RoundedCornerShape(8.dp))
                             .clickable { onClick() },
@@ -63,25 +69,94 @@ fun SetCardView(
             color = Color.White,
             shadowElevation = 4.dp
     ) {
-        Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically
-        ) {
-            val count =
-                    when (card.number) {
-                        SetNumber.One -> 1
-                        SetNumber.Two -> 2
-                        SetNumber.Three -> 3
-                    }
+        val count =
+                when (card.number) {
+                    SetNumber.One -> 1
+                    SetNumber.Two -> 2
+                    SetNumber.Three -> 3
+                }
 
-            for (i in 0 until count) {
-                //                if (i > 0) Spacer(modifier = Modifier.width(8.dp))
-                // Adjust aspect ratio of the shape itself to be reasonable (e.g. 1:2 or 2:1
-                // depending on shape)
-                // For Squiggle/Diamond/Oval usually they are somewhat wide.
-                // In a horizontal row, we restrict width by weight, let height fill.
-                ShapeView(card, modifier = Modifier.fillMaxHeight(0.6f).aspectRatio(0.6f))
+        if (isLandscape) {
+            // Horizontal Card: Shapes in a Row
+            Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement =
+                            Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically
+            ) {
+                for (i in 0 until count) {
+                    ShapeView(card, modifier = Modifier.fillMaxHeight(0.6f).aspectRatio(0.6f))
+                }
+            }
+        } else {
+            // Vertical Card: Shapes in a Column
+            Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+                    horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                for (i in 0 until count) {
+                    // For vertical card, shapes are wide.
+                    // ShapeView usually draws a "vertical" shape in previous implementation?
+                    // Let's check ShapeView. It draws based on `size`.
+                    // If we want the shape to look the same but rotated?
+                    // Actually, standard SET shapes are usually "Pill/Diamond/Squiggle" which are
+                    // often depicted as elongated.
+                    // If the card is vertical, the shapes usually run horizontally across the card?
+                    // No, usually they stack vertically.
+                    // Vertical Card:
+                    //  [ S ]
+                    //  [ S ]
+                    //  [ S ]
+                    // So we stack them in a Column.
+                    // The ShapeView itself:
+                    // In the original Horizontal card, ShapeView was
+                    // `fillMaxHeight(0.6f).aspectRatio(0.6f)`.
+                    // This means the shape was roughly 1:1 or slightly taller than wide? 0.6 / 1.0
+                    // (height) * 0.6 (ratio) = width 0.6*height?
+                    // Wait, `aspectRatio(0.6f)` means width/height = 0.6. So it's taller than wide.
+                    // Existing ShapePaths (Diamond, Oval, Squiggle) seem designed for "Taller than
+                    // wide" shapes.
+
+                    // So for Vertical Card (Stacking them):
+                    // We want the shape to maintain its "Taller than wide" aspect?
+                    // Or should they be "Wider than tall"?
+                    // Standard Set card:
+                    // Vertical Card: Shapes are stacked. Each shape is "Wider than tall"?
+                    // Let's look at real SET cards.
+                    // Real SET cards are typically vertical. The shapes are stacked vertically.
+                    // The shapes themselves are "Pill" shapes that are wider than tall.
+
+                    // My `ShapeView` paths (Diamond, Squiggle) seem to be drawn "normalized" to
+                    // size.
+                    // `createDiamondPath`: width/2, 0 -> width, height/2... It draws a diamond
+                    // fitting the box.
+
+                    // If I want "Wider than tall" shapes in a Vertical Card:
+                    // I should give them a wide Aspect Ratio (e.g., 1.5 or 2.0).
+
+                    // Current `ShapeView` implementation (original) was used in a `Row`.
+                    // `modifier = Modifier.fillMaxHeight(0.6f).aspectRatio(0.6f)`
+                    // This meant the container for the shape was Taller than Wide.
+
+                    // Let's try to keep the shape orientation consistent with the card orientation?
+                    // If the user said "Rotate cards accordingly", maybe they mean the whole card
+                    // rotates.
+                    // If I rotate the card 90 degrees:
+                    // Horizontal Card -> Vertical Card.
+                    // The shapes inside also rotate?
+                    // Yes, if you physically rotate a card, the shapes rotate.
+                    // So if we have "Vertical Worms" arranged in a Row (Horizontal Card).
+                    // We should have "Horizontal Worms" arranged in a Column (Vertical Card).
+
+                    // So, for Vertical Card:
+                    // Stack in Column.
+                    // Shape Aspect Ratio should be inverted compared to Horizontal Card?
+                    // Horizontal Card Shape: `aspectRatio(0.6f)` (Taller than wide).
+                    // Vertical Card Shape: `aspectRatio(1.66f)` (Wider than tall).
+
+                    ShapeView(card, modifier = Modifier.fillMaxWidth(0.6f).aspectRatio(1.66f))
+                }
             }
         }
     }
