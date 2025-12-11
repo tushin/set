@@ -1,21 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
     
-    <!-- Red Diamond -->
-    <path
-        android:fillColor="#FF0000"
-        android:pathData="M54,20 L84,40 L54,60 L24,40 Z" />
+    <!-- Scale Group: 80% size -->
+    <group
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:pivotX="54"
+        android:pivotY="54">
 
-    <!-- Green Wavy Shape (Squiggle approximation - rounded rect) -->
-    <path
-        android:fillColor="#00AA00"
-        android:pathData="M30,65 Q30,55 40,55 H68 Q78,55 78,65 Q78,75 68,75 H40 Q30,75 30,65 Z" />
+        <!-- Card Dimensions: 26x48 (Narrower) -->
+        
+        <!-- Left Card (Back) -->
+        <!-- Center (48, 57), Rotated -15 -->
+        <group 
+            android:pivotX="48"
+            android:pivotY="57"
+            android:rotation="-15">
+            <path
+                android:fillColor="#F5F5F5"
+                android:strokeColor="#9E9E9E"
+                android:strokeWidth="1.5"
+                android:pathData="M35,33 h26 a4,4 0 0 1 4,4 v40 a4,4 0 0 1 -4,4 h-26 a4,4 0 0 1 -4,-4 v-40 a4,4 0 0 1 4,-4 z"/>
+        </group>
 
-    <!-- Purple Oval -->
-    <path
-        android:fillColor="#800080"
-        android:pathData="M30,90 Q30,80 54,80 T78,90 Q78,100 54,100 T30,90 Z" />
+        <!-- Right Card (Back) -->
+        <!-- Center (60, 57), Rotated 15 -->
+        <group 
+            android:pivotX="60"
+            android:pivotY="57"
+            android:rotation="15">
+            <path
+                android:fillColor="#F5F5F5"
+                android:strokeColor="#9E9E9E"
+                android:strokeWidth="1.5"
+                android:pathData="M47,33 h26 a4,4 0 0 1 4,4 v40 a4,4 0 0 1 -4,4 h-26 a4,4 0 0 1 -4,-4 v-40 a4,4 0 0 1 4,-4 z"/>
+        </group>
+
+        <!-- Center Card (Top) -->
+        <!-- Center (54, 54) -->
+        <group>
+            <!-- Card Body with Border -->
+            <path
+                android:fillColor="#F5F5F5"
+                android:strokeColor="#9E9E9E"
+                android:strokeWidth="1.5"
+                android:pathData="M41,30 h26 a4,4 0 0 1 4,4 v40 a4,4 0 0 1 -4,4 h-26 a4,4 0 0 1 -4,-4 v-40 a4,4 0 0 1 4,-4 z"/>
+            
+            <!-- Red Diamond Symbol -->
+            <path
+                android:fillColor="#FF0000"
+                android:pathData="M54,49.3 L61.8,54 L54,58.7 L46.2,54 Z"/>
+        </group>
+    </group>
 </vector>
