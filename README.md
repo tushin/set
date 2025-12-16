@@ -1,45 +1,58 @@
-# SET Game
+# SET Game - Kotlin Multiplatform PWA
 
-## 1. SET 게임 소개
+A modern, responsive implementation of the classic card game **SET** built with **Kotlin Multiplatform** and **Compose Multiplatform**.
 
-SET은 고도의 인지 능력을 요하는 실시간 카드 게임입니다. 이 게임의 목표는 테이블에 펼쳐진 카드 중에서 '세트(Set)'가 되는 3장의 카드를 찾는 것입니다.
+This project demonstrates code sharing across Android and Web (Wasm) platforms, featuring a polished UI and smooth animations.
 
-### 게임 규칙
+## About the Game
 
-게임은 81장의 카드로 진행되며, 각 카드는 4가지 속성을 가지고 있습니다:
+**SET** is a real-time card game designed by Marsha Falco in 1974. The goal is to identify a 'Set' of three cards from 12 laid out on the table. Each card has a variation of the following four features:
 
-*   **모양 (Shape)**: 타원, 물결, 다이아몬드
-*   **색상 (Color)**: 빨강, 초록, 보라
-*   **채우기 (Shading)**: 빈 것, 줄무늬, 꽉 찬 것
-*   **개수 (Number)**: 1개, 2개, 3개
+1.  **Color:** Red, Green, or Purple
+2.  **Shape:** Diamond, Oval, or Squiggle
+3.  **Number:** One, Two, or Three
+4.  **Shading:** Solid, Striped, or Open
 
-**세트(Set)**란 3장의 카드가 다음 조건을 만족하는 경우를 말합니다:
-각 속성(모양, 색상, 채우기, 개수)에 대해, 3장의 카드가 **모두 같거나** 혹은 **모두 달라야** 합니다.
+**A 'Set' consists of three cards in which each of the cards' features, look at one-by-one, are the same on each card, or are different on each card.**
 
-예를 들어:
-*   새 장의 카드가 모두 '빨강'이면, 색상 속성은 조건을 만족합니다.
-*   한 장은 '빨강', 한 장은 '초록', 나머지 한 장은 '보라'라면, 색상 속성은 조건을 만족합니다.
-*   하지만 두 장은 '빨강'이고 한 장은 '초록'이라면, '세트'가 아닙니다.
+For example:
+*   **Color:** All Red OR one Red, one Green, one Purple.
+*   **Shape:** All Ovals OR one Diamond, one Oval, one Squiggle.
+*   **Number:** All Twos OR one One, one Two, one Three.
+*   **Shading:** All Solid OR one Solid, one Striped, one Open.
 
-## 2. 프로젝트 설명
+If two cards are the same and one is different, it is **not** a Set.
 
-이 프로젝트는 안드로이드 플랫폼을 위한 SET 게임 구현체입니다. 사용자가 모바일 환경에서 즐겁게 SET 게임을 플레이할 수 있도록 직관적인 UI와 부드러운 인터랙션을 제공하는 것을 목표로 합니다.
+## Project Structure
 
-### 기술 스택
+*   `composeApp`: Shared KMP module containing the game logic (`commonMain`), Android support (`androidMain`), and Web support (`wasmJsMain`).
+*   `app`: Android application entry point.
+*   `gradle`: Build configuration.
 
-*   **언어**: Kotlin
-*   **UI 프레임워크**: Jetpack Compose
-*   **아키텍처**: MVVM (Model-View-ViewModel) 패턴 권장
-*   **빌드 시스템**: Gradle (Kotlin DSL)
+## Features
 
-### 주요 기능
+*   **Platform Independence:** Core logic and UI are shared 100% between Android and Web.
+*   **Progressive Web App (PWA):** Installable on devices, offline support via Service Workers.
+*   **Responsive Design:** Adapts layout for portrait (mobile) and landscape (desktop/tablet) screens.
+*   **Animations:** Smooth transitions for card movements and hints.
 
-*   **게임 로직**: SET 판별 알고리즘 및 덱 생성, 카드 분배 로직
-*   **싱글 플레이**: 혼자서 연습할 수 있는 모드
-*   **반응형 디자인**: 다양한 화면 크기에 대응하는 레이아웃
+## Technologies
 
-### 시작하기
+*   Kotlin 2.0.21
+*   Compose Multiplatform 1.7.0
+*   Kotlin Wasm (WebAssembly)
+*   Gradle 8.13
 
-1. 저장소를 클론합니다.
-2. Android Studio에서 프로젝트를 엽니다.
-3. 앱을 빌드하고 에뮬레이터나 기기에서 실행합니다.
+## How to Run
+
+### Web (Wasm)
+```bash
+./gradlew :composeApp:wasmJsBrowserDevelopmentRun
+```
+
+### Android
+Open in Android Studio and run the `app` configuration.
+
+## Deployment
+
+The project is configured to deploy automatically to GitHub Pages via GitHub Actions.
