@@ -1,6 +1,6 @@
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.CanvasBasedWindow
-import com.sully.checklist.shared.App
+import com.sully.set.shared.App
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {

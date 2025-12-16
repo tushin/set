@@ -8,13 +8,13 @@ plugins {
 }
 
 android {
-    namespace = "com.sully.checklist"
+    namespace = "com.sully.set"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.sully.checklist"
+        applicationId = "com.sully.set"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

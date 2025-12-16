@@ -55,7 +55,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.sully.checklist.shared"
+    namespace = "com.sully.set.shared"
     compileSdk = 36
 
     defaultConfig {

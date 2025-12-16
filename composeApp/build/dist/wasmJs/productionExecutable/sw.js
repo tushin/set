@@ -1,9 +1,10 @@
 var cacheName = 'checklist-pwa';
 var filesToCache = [
-    '/',
-    '/index.html',
-    '/manifest.json',
-    '/composeApp.js'
+    './',
+    './index.html',
+    './manifest.json',
+    './composeApp.js',
+    './icon.png'
 ];
 
 self.addEventListener('install', function (e) {

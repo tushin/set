@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CheckList"
+rootProject.name = "Set"
 include(":app", ":composeApp")
  
