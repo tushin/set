@@ -1,0 +1,11 @@
+abi_version=1.8.0
+builtins_platform=WASM
+compiler_version=2.0.21
+depends=components.resources\:library components.ui-tooling-preview\:library org.jetbrains.compose.material3\:material3 org.jetbrains.compose.material\:material-ripple org.jetbrains.compose.foundation\:foundation org.jetbrains.compose.animation\:animation org.jetbrains.compose.material\:material-icons-core org.jetbrains.compose.foundation\:foundation-layout org.jetbrains.compose.ui\:ui org.jetbrains.kotlinx\:kotlinx-browser org.jetbrains.compose.animation\:animation-core org.jetbrains.kotlinx\:kotlinx-coroutines-core org.jetbrains.kotlinx\:atomicfu org.jetbrains.compose.runtime\:runtime-saveable kotlin org.jetbrains.compose.runtime\:runtime org.jetbrains.compose.ui\:ui-text org.jetbrains.compose.ui\:ui-graphics org.jetbrains.compose.ui\:ui-unit org.jetbrains.skiko\:skiko org.jetbrains.compose.ui\:ui-geometry org.jetbrains.compose.ui\:ui-util
+ir_signature_versions=1,2
+jsOutputName=composeApp
+metadata_version=1.4.1
+serializedIrFileFingerprints=32skdw638dmwi.3j3y3qw4lfwmb bwu7nwwkexcz.2b1mucy7mgp72 3e2tb3fq1xes7.x25odp5wy9wl 4woru46t30pc.1hgjuizys2qq9 3an9eunxu6ad8.3vtk4wykvq73w 1oh5b3dwgvztr.18iyueeqxljhy 1nt842b2rfyz6.1vzm4xq8mcstp 3hd0ujy09c8r6.1nch2o7jx2px0 16kvj7v8r53s.tu6tchrq3xhi 3m2hkmzodp16g.12zanhd1rlqmv 3qcrr6pj1ad8w.3k9nabj7jw5r2 r8s794xdo8pg.1raqoegocm72v 1suyg71od31su.14g86greque02
+serializedKlibFingerprint=32wvvs4suhvbo.3tu5htv3f8emu
+unique_name=CheckList\:composeApp
+wasm_targets=wasm-js
