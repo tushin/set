@@ -1,6 +1,0 @@
-[
-    {
-        "merged": "com.sully.set.shared.composeApp-release-36:/drawable-v21/notification_action_background.xml",
-        "source": "com.sully.set.shared.composeApp-core-1.16.0-20:/drawable-v21/notification_action_background.xml"
-    }
-]
